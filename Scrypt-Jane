@@ -1,0 +1,46 @@
+ 
+#Description
+Stratum-mining is a pooled mining protocol. It is a replacement for *getwork* based pooling servers by allowing clients to generate work. The stratum protocol is described [here](http://mining.bitcoin.cz/stratum-mining) in full detail.
+
+This is a implementation of stratum-mining for Scrypt-Jane based coins. It is compatible with *mmcfe-ng* as well as *mmcfe*, as it complies with the standards of *pushpool*. T
+
+The goal is to make a reliable stratum mining server for scrypt-jane based coins. 
+
+
+Install Scrypt-Jane.
+
+Inside the yac_scrypt folder is a file named scryptmodule.c.
+
+In lines 10-13 set the scrypt-jane parameters for the coin you want to use stratum for.
+
+Below is an example for Gold Pressed Latinum:
+
+const unsigned char minNfactor = 4;
+const unsigned char maxNfactor = 30;
+int nChainStartTime = 1377557832;
+
+After setting the parameters, you install scrypt-jane with the folling command:
+
+sudo python setup.py install
+
+Next, open the config.py.example file in the conf folder.
+
+Set the parameters to you needs.
+
+Note: The coinbase address is the full pubkey. Simply get an address from the daemon. Example (./goldpressedlatinumd getnewaddress pool)
+
+take the address given and use the validate function to get the full pub key example(./goldpressedlatinumd validateaddress <address you received in first step>)
+
+One of the values listed will be the full pubkey.
+
+save the file as config.py
+
+Read through the install instructions to make sure all dependencies are installed.
+
+Start stratum with:
+
+twistd -ny launcher.tac -l -
+
+
+
+
