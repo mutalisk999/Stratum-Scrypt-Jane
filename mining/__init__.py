@@ -6,30 +6,31 @@ import time
 import simplejson as json
 from twisted.internet import reactor
 
+
 @defer.inlineCallbacks
 def setup(on_startup):
-    '''Setup mining service internal environment.
+    """Setup mining service internal environment.
     You should not need to change this. If you
     want to use another Worker manager or Share manager,
     you should set proper reference to Interfaces class
-    *before* you call setup() in the launcher script.'''
-    
+    *before* you call setup() in the launcher script."""
+
     import lib.settings as settings
-        
+
     # Get logging online as soon as possible
     import lib.logger
     log = lib.logger.get_logger('mining')
 
     from interfaces import Interfaces
-    
+
     from lib.block_updater import BlockUpdater
     from lib.template_registry import TemplateRegistry
     from lib.bitcoin_rpc_manager import BitcoinRPCManager
     from lib.block_template import BlockTemplate
     from lib.coinbaser import SimpleCoinbaser
-    
+
     bitcoin_rpc = BitcoinRPCManager()
-    
+
     # Check litecoind
     #         Check we can connect (sleep)
     # Check the results:
@@ -45,7 +46,8 @@ def setup(on_startup):
                     break
 
         except ConnectionRefusedError, e:
-            log.error("Connection refused while trying to connect to litecoin (are your LITECOIN_TRUSTED_* settings correct?)")
+            log.error(
+                "Connection refused while trying to connect to litecoin (are your LITECOIN_TRUSTED_* settings correct?)")
             reactor.stop()
 
         except Exception, e:
@@ -61,33 +63,28 @@ def setup(on_startup):
                     else:
                         log.error("Litecoind Error: %s", error)
         time.sleep(1)  # If we didn't get a result or the connect failed
-        
+
     log.info('Connected to litecoind - Ready to GO!')
 
     # Start the coinbaser
     coinbaser = SimpleCoinbaser(bitcoin_rpc, getattr(settings, 'CENTRAL_WALLET'))
     (yield coinbaser.on_load)
-    
+
     registry = TemplateRegistry(BlockTemplate,
                                 coinbaser,
                                 bitcoin_rpc,
                                 getattr(settings, 'INSTANCE_ID'),
-                                MiningSubscription.on_template,               # on template callback
-                                Interfaces.share_manager.on_network_block)    # on block callback
-    
+                                MiningSubscription.on_template,  # on template callback
+                                Interfaces.share_manager.on_network_block)  # on block callback
+
     # Template registry is the main interface between Stratum service
     # and pool core logic
     Interfaces.set_template_registry(registry)
-    
+
     # Set up polling mechanism for detecting new block on the network
     # This is just failsafe solution when -blocknotify
     # mechanism is not working properly    
     BlockUpdater(registry, bitcoin_rpc)
-    
+
     log.info("MINING SERVICE IS READY")
     on_startup.callback(True)
-
-
-
-
-

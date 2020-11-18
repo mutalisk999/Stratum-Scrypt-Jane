@@ -1,7 +1,7 @@
-'''
+"""
 This is example configuration for Stratum server.
 Please rename it to config.py and fill correct values.
-'''
+"""
 
 # ******************** GENERAL SETTINGS ***************
 

@@ -1,6 +1,6 @@
-'''
+"""
     Implements simple interface to litecoind's RPC.
-'''
+"""
 
 
 import simplejson as json

@@ -1,10 +1,10 @@
 import struct
 
 class ExtranonceCounter(object):
-    '''Implementation of a counter producing
+    """Implementation of a counter producing
        unique extranonce across all pool instances.
        This is just dumb "quick&dirty" solution,
-       but it can be changed at any time without breaking anything.'''       
+       but it can be changed at any time without breaking anything."""
 
     def __init__(self, instance_id):
         if instance_id < 0 or instance_id > 31:
@@ -16,10 +16,9 @@ class ExtranonceCounter(object):
         self.size = struct.calcsize('>L')
         
     def get_size(self):
-        '''Return expected size of generated extranonce in bytes'''
+        """Return expected size of generated extranonce in bytes"""
         return self.size
     
     def get_new_bin(self):
         self.counter += 1
         return struct.pack('>L', self.counter)
-        
