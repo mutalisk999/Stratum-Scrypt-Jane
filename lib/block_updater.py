@@ -30,6 +30,8 @@ class BlockUpdater(object):
         self.clock = reactor.callLater(when, self.run)
         
     def _get_next_time(self):
+        if self.registry.last_update is None:
+            self.registry.last_update = 0.0
         when = settings.PREVHASH_REFRESH_INTERVAL - (Interfaces.timestamper.time() - self.registry.last_update) % \
                settings.PREVHASH_REFRESH_INTERVAL
         return when  
@@ -45,7 +47,8 @@ class BlockUpdater(object):
                 current_prevhash = None
                 
             log.info("Checking for new block.")
-	    prevhash = util.reverse_hash((yield self.bitcoin_rpc.prevhash()))
+            #prevhash = util.reverse_hash((yield self.bitcoin_rpc.prevhash()))
+            prevhash = yield self.bitcoin_rpc.prevhash()
             if prevhash and prevhash != current_prevhash:
                 log.info("New block! Prevhash: %s" % prevhash)
                 update = True

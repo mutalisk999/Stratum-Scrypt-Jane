@@ -27,7 +27,8 @@ def ser_string(s):
 def deser_uint256(f):
     r = 0L
     for i in xrange(8):
-        t = struct.unpack("<I", f.read(4))[0]
+        v = f.read(4)
+        t = struct.unpack("<I", v)[0]
         r += t << (i * 32)
     return r
 

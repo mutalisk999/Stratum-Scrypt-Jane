@@ -6,7 +6,7 @@ import simplejson as json
 import base64
 from twisted.internet import defer
 from twisted.web import client
-import time
+import time, sys
 
 import lib.logger
 log = lib.logger.get_logger('bitcoin_rpc')
@@ -20,7 +20,7 @@ class BitcoinRPC(object):
             'Content-Type': 'text/json',
             'Authorization': 'Basic %s' % self.credentials,
         }
-	client.HTTPClientFactory.noisy = False
+        client.HTTPClientFactory.noisy = False
         
     def _call_raw(self, data):
         client.Headers
@@ -42,10 +42,12 @@ class BitcoinRPC(object):
     @defer.inlineCallbacks
     def submitblock(self, block_hex, block_hash_hex):
         # Try submitblock if that fails, go to getblocktemplate
+        log.debug("submitblock %s" % block_hash_hex)
         try:
             resp = (yield self._call('submitblock', [block_hex,]))
         except Exception as e:
             print >> sys.stderr,"Problem Submitting submitblock",str(e)
+            log.exception("Problem Submitting block %s" % str(e))
             try: 
                 resp = (yield self._call('getblocktemplate', [{'mode': 'submit', 'data': block_hex}]))
             except Exception as e:
@@ -67,12 +69,22 @@ class BitcoinRPC(object):
     def getblocktemplate(self):
         resp = (yield self._call('getblocktemplate', [{}]))
         defer.returnValue(json.loads(resp)['result'])
-                                                  
+
+    '''                                           
     @defer.inlineCallbacks
     def prevhash(self):
         resp = (yield self._call('getwork', []))
         try:
             defer.returnValue(json.loads(resp)['result']['data'][8:72])
+        except Exception as e:
+            log.exception("Cannot decode prevhash %s" % str(e))
+            raise
+    '''
+    @defer.inlineCallbacks
+    def prevhash(self):
+        resp = (yield self._call('getbestblockhash', []))
+        try:
+            defer.returnValue(json.loads(resp)['result'])
         except Exception as e:
             log.exception("Cannot decode prevhash %s" % str(e))
             raise

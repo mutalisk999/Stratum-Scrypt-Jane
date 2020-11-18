@@ -99,6 +99,7 @@ class MiningService(GenericService):
             (block_header, block_hash, share_diff, on_submit) = Interfaces.template_registry.submit_share(job_id,
                 worker_name, session, extranonce1_bin, extranonce2, ntime, nonce, difficulty)
         except SubmitException as e:
+            log.error("SubmitException %s", str(e))
             # block_header and block_hash are None when submitted data are corrupted
             Interfaces.share_manager.on_submit_share(worker_name, False, False, difficulty,
                 submit_time, False, ip, e[0], 0)    

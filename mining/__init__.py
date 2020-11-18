@@ -72,8 +72,8 @@ def setup(on_startup):
                                 coinbaser,
                                 bitcoin_rpc,
                                 getattr(settings, 'INSTANCE_ID'),
-                                MiningSubscription.on_template,
-                                Interfaces.share_manager.on_network_block)
+                                MiningSubscription.on_template,               # on template callback
+                                Interfaces.share_manager.on_network_block)    # on block callback
     
     # Template registry is the main interface between Stratum service
     # and pool core logic

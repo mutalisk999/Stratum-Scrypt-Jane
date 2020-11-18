@@ -80,10 +80,11 @@ class BasicShareLimiter(object):
         if 'timestamp' not in self.litecoin or self.litecoin['timestamp'] < int(time.time()) - settings.DIFF_UPDATE_FREQUENCY:
             self.litecoin['timestamp'] = time.time()
             ldiff = (yield Interfaces.template_registry.bitcoin_rpc.getdifficulty())
-            if 'proof-of-work' in ldiff:
-                self.litecoin['difficulty'] = ldiff['proof-of-work']
-            else:
-                self.litecoin['difficulty'] = ldiff
+            #if 'proof-of-work' in ldiff:
+            #    self.litecoin['difficulty'] = ldiff['proof-of-work']
+            #else:
+            #    self.litecoin['difficulty'] = ldiff
+            self.litecoin['difficulty'] = ldiff
                 
             log.debug("Updated litecoin difficulty to %s" %  (self.litecoin['difficulty']))
         self.litecoin_diff = self.litecoin['difficulty']

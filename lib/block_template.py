@@ -6,10 +6,12 @@ import util
 import merkletree
 import halfnode
 from coinbasetx import CoinbaseTransaction
-
+import lib
 # Remove dependency to settings, coinbase extras should be
 # provided from coinbaser
 import settings
+
+log = lib.logger.get_logger('template_registry')
 
 class BlockTemplate(halfnode.CBlock):
     '''Template is used for generating new jobs for clients.
@@ -72,6 +74,7 @@ class BlockTemplate(halfnode.CBlock):
         # Reversed prevhash
         self.prevhash_bin = binascii.unhexlify(util.reverse_hash(data['previousblockhash']))
         self.prevhash_hex = "%064x" % self.hashPrevBlock
+        log.debug("fill_from_rpc previousblockhash: %s", self.prevhash_hex)
         
         self.broadcast_args = self.build_broadcast_args()
                 
@@ -109,6 +112,8 @@ class BlockTemplate(halfnode.CBlock):
     
     def check_ntime(self, ntime):
         '''Check for ntime restrictions.'''
+        log.debug("check_ntime, ntime %d, curtime %d, timestamper %d", int(ntime), int(self.curtime), int(self.timestamper.time()))
+
         if ntime < self.curtime:
             return False
         
@@ -121,13 +126,21 @@ class BlockTemplate(halfnode.CBlock):
 
     def serialize_header(self, merkle_root_int, ntime_bin, nonce_bin):
         '''Serialize header for calculating block hash'''
+        log.debug("serialize_header")
+        log.debug("pack nVersion %s", struct.pack(">i", self.nVersion).encode("hex"))
         r  = struct.pack(">i", self.nVersion)
+        log.debug("pack prevhash_bin %s", self.prevhash_bin.encode("hex"))
         r += self.prevhash_bin
+        log.debug("pack merkle_root %s", util.ser_uint256_be(merkle_root_int).encode("hex"))
         r += util.ser_uint256_be(merkle_root_int)
+        log.debug("pack ntime_bin %s", ntime_bin.encode("hex"))
         r += ntime_bin
+        log.debug("pack nBits %s", struct.pack(">I", self.nBits).encode("hex"))
         r += struct.pack(">I", self.nBits)
+        log.debug("pack nonce_bin %s", nonce_bin.encode("hex"))
         r += nonce_bin    
-        return r       
+        return r
+
 
     def finalize(self, merkle_root_int, extranonce1_bin, extranonce2_bin, ntime, nonce):
         '''Take all parameters required to compile block candidate.

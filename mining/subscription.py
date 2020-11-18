@@ -33,8 +33,9 @@ class MiningSubscription(Subscription):
         try:        
             (job_id, prevhash, coinb1, coinb2, merkle_branch, version, nbits, ntime, _) = \
                         Interfaces.template_registry.get_last_broadcast_args()
-        except Exception:
+        except Exception, ex:
             log.error("Template not ready yet")
+            log.error("%s" % str(ex))
             return result
         
         # Force set higher difficulty

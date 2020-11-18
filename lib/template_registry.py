@@ -32,6 +32,7 @@ class TemplateRegistry(object):
     
     def __init__(self, block_template_class, coinbaser, bitcoin_rpc, instance_id,
                  on_template_callback, on_block_callback):
+        log.debug("TemplateRegistry init")
         self.prevhashes = {}
         self.jobs = weakref.WeakValueDictionary()
         
@@ -55,18 +56,20 @@ class TemplateRegistry(object):
     def get_new_extranonce1(self):
         '''Generates unique extranonce1 (e.g. for newly
         subscribed connection.'''
+        log.debug("TemplateRegistry get_new_extranonce1")
         return self.extranonce_counter.get_new_bin()
     
     def get_last_broadcast_args(self):
         '''Returns arguments for mining.notify
         from last known template.'''
+        log.debug("TemplateRegistry get_last_broadcast_args")
         return self.last_block.broadcast_args
         
     def add_template(self, block,block_height):
         '''Adds new template to the registry.
         It also clean up templates which should
         not be used anymore.'''
-        
+        log.debug("TemplateRegistry add_template")
         prevhash = block.prevhash_hex
 
         if prevhash in self.prevhashes.keys():
@@ -90,7 +93,7 @@ class TemplateRegistry(object):
             if ph != prevhash:
                 del self.prevhashes[ph]
                 
-        log.info("New template for %s" % prevhash)
+        log.debug("New template for %s" % prevhash)
 
         if new_block:
             # Tell the system about new block
@@ -107,7 +110,7 @@ class TemplateRegistry(object):
     def update_block(self):
         '''Registry calls the getblocktemplate() RPC
         and build new block template.'''
-        
+        log.debug("TemplateRegistry update_block")
         if self.update_in_progress:
             # Block has been already detected
             return
@@ -118,19 +121,22 @@ class TemplateRegistry(object):
         d = self.bitcoin_rpc.getblocktemplate()
         d.addCallback(self._update_block)
         d.addErrback(self._update_block_failed)
+
         
     def _update_block_failed(self, failure):
+        log.debug("TemplateRegistry _update_block_failed")
         log.error(str(failure))
         self.update_in_progress = False
         
     def _update_block(self, data):
+        log.debug("TemplateRegistry _update_block")
         start = Interfaces.timestamper.time()
                 
         template = self.block_template_class(Interfaces.timestamper, self.coinbaser, JobIdGenerator.get_new_id())
         template.fill_from_rpc(data)
         self.add_template(template,data['height'])
 
-        log.info("Update finished, %.03f sec, %d txes" % \
+        log.debug("Update finished, %.03f sec, %d txes" % \
                     (Interfaces.timestamper.time() - start, len(template.vtx)))
         
         self.update_in_progress = False        
@@ -138,27 +144,29 @@ class TemplateRegistry(object):
     
     def diff_to_target(self, difficulty):
         '''Converts difficulty to target'''
-        #diff1 = 0x00000000ffff0000000000000000000000000000000000000000000000000000 
-        diff1 = 0x0000ffff00000000000000000000000000000000000000000000000000000000
+        log.debug("TemplateRegistry diff_to_target")
+        diff1 = 0x00000000ffff0000000000000000000000000000000000000000000000000000
+        #diff1 = 0x0000ffff00000000000000000000000000000000000000000000000000000000
         return diff1 / difficulty
     
     def get_job(self, job_id):
+        log.debug("TemplateRegistry get_job")
         '''For given job_id returns BlockTemplate instance or None'''
         try:
             j = self.jobs[job_id]
         except:
-            log.info("Job id '%s' not found" % job_id)
+            log.debug("Job id '%s' not found" % job_id)
             return None
         
         # Now we have to check if job is still valid.
         # Unfortunately weak references are not bulletproof and
         # old reference can be found until next run of garbage collector.
         if j.prevhash_hex not in self.prevhashes:
-            log.info("Prevhash of job '%s' is unknown" % job_id)
+            log.debug("Prevhash of job '%s' is unknown" % job_id)
             return None
         
         if j not in self.prevhashes[j.prevhash_hex]:
-            log.info("Job %s is unknown" % job_id)
+            log.debug("Job %s is unknown" % job_id)
             return None
         
         return j
@@ -174,7 +182,9 @@ class TemplateRegistry(object):
             - difficulty - decimal number from session, again no checks performed
             - submitblock_callback - reference to method which receive result of submitblock()
         '''
-        
+
+        log.debug("TemplateRegistry submit_share")
+        log.debug("from %s, (%s %s %s %s)" % (worker_name, binascii.hexlify(extranonce1_bin), extranonce2, ntime, nonce))
         # Check if extranonce2 looks correctly. extranonce2 is in hex form...
         if len(extranonce2) != self.extranonce2_size * 2:
             raise SubmitException("Incorrect size of extranonce2. Expected %d chars" % (self.extranonce2_size*2))
@@ -197,7 +207,7 @@ class TemplateRegistry(object):
         
         # Check for duplicated submit
         if not job.register_submit(extranonce1_bin, extranonce2, ntime, nonce):
-            log.info("Duplicate from %s, (%s %s %s %s)" % \
+            log.debug("Duplicate from %s, (%s %s %s %s)" % \
                     (worker_name, binascii.hexlify(extranonce1_bin), extranonce2, ntime, nonce))
             raise SubmitException("Duplicate share")
         
@@ -219,16 +229,17 @@ class TemplateRegistry(object):
                 
         # 3. Serialize header with given merkle, ntime and nonce
         header_bin = job.serialize_header(merkle_root_int, ntime_bin, nonce_bin)
-    
+
         # 4. Reverse header and compare it with target of the user
-        hash_bin = yac_scrypt.getPoWHash (''. join ([header_bin [i * 4: i * 4 +4] [:: -1] for i in range (0, 20)]), int (ntime, 16));
+        #hash_bin = yac_scrypt.getPoWHash (''. join ([header_bin [i * 4: i * 4 +4] [:: -1] for i in range (0, 20)]), int (ntime, 16))
+        hash_bin = ltc_scrypt.getPoWHash(''.join([header_bin[i * 4: i * 4 + 4][:: -1] for i in range(0, 20)]))
         hash_int = util.uint256_from_str(hash_bin)
         scrypt_hash_hex = "%064x" % hash_int
         header_hex = binascii.hexlify(header_bin)
         header_hex = header_hex+"000000800000000000000000000000000000000000000000000000000000000000000000000000000000000080020000"
-        
                  
-        target_user = self.diff_to_target(difficulty)        
+        target_user = self.diff_to_target(difficulty)
+        log.debug("hash_int: %064x, target_user: %064x" % (hash_int, target_user))
         if hash_int > target_user and \
 		( 'prev_jobid' not in session or session['prev_jobid'] < job_id \
 		or 'prev_diff' not in session or hash_int > self.diff_to_target(session['prev_diff']) ):
@@ -237,7 +248,7 @@ class TemplateRegistry(object):
         # Mostly for debugging purposes
         target_info = self.diff_to_target(100000)
         if hash_int <= target_info:
-            log.info("Yay, share with diff above 100000")
+            log.debug("Yay, share with diff above 100000")
 
         # Algebra tells us the diff_to_target is the same as hash_to_diff
         share_diff = int(self.diff_to_target(hash_int))
@@ -246,7 +257,7 @@ class TemplateRegistry(object):
         # 5. Compare hash with target of the network        
         if hash_int <= job.target:
             # Yay! It is block candidate! 
-            log.info("We found a block candidate! %s" % scrypt_hash_hex)
+            log.debug("We found a block candidate! %s" % scrypt_hash_hex)
 
             # 6. Finalize and serialize block object 
             job.finalize(merkle_root_int, extranonce1_bin, extranonce2_bin, int(ntime, 16), int(nonce, 16))

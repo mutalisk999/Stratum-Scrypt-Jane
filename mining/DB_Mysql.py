@@ -23,10 +23,12 @@ class DB_Mysql():
         
     def connect(self):
         self.dbh = MySQLdb.connect(
-            getattr(settings, 'DB_MYSQL_HOST'), 
-            getattr(settings, 'DB_MYSQL_USER'),
-            getattr(settings, 'DB_MYSQL_PASS'), 
-            getattr(settings, 'DB_MYSQL_DBNAME')
+            host=getattr(settings, 'DB_MYSQL_HOST'), 
+            user=getattr(settings, 'DB_MYSQL_USER'),
+            passwd=getattr(settings, 'DB_MYSQL_PASS'), 
+            db=getattr(settings, 'DB_MYSQL_DBNAME'),
+            port=getattr(settings, 'DB_MYSQL_PORT'),
+
         )
         self.dbc = self.dbh.cursor()
         self.dbh.autocommit(True)
