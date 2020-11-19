@@ -102,14 +102,14 @@ USER_AGENT = 'Stratum/0.1'
 # Provide human-friendly user interface on HTTP transports for browsing exposed services.
 BROWSER_ENABLE = True
 
-# ******************** LITECOIND SETTINGS ************
+# ******************** Dashcoind SETTINGS ************
 
 # Hostname and credentials for one trusted Bitcoin node ("Satoshi's client").
 # Stratum uses both P2P port (which is 8333 everytime) and RPC port
-LITECOIN_TRUSTED_HOST = '127.0.0.1'
-LITECOIN_TRUSTED_PORT = 8332 # RPC port
-LITECOIN_TRUSTED_USER = 'stratum'
-LITECOIN_TRUSTED_PASSWORD = '***somepassword***'
+DASHCOIN_TRUSTED_HOST = '127.0.0.1'
+DASHCOIN_TRUSTED_PORT = 8332 # RPC port
+DASHCOIN_TRUSTED_USER = 'stratum'
+DASHCOIN_TRUSTED_PASSWORD = '***somepassword***'
 
 # ******************** OTHER CORE SETTINGS *********************
 # Use "echo -n '<yourpassword>' | sha256sum | cut -f1 -d' ' "
@@ -171,8 +171,8 @@ VARIABLE_DIFF = False        # Master variable difficulty enable
 
 # Variable diff tuning variables
 #VARDIFF will start at the POOL_TARGET. It can go as low as the VDIFF_MIN and as high as min(VDIFF_MAX or Liteconin's difficulty)
-USE_LITECOIN_DIFF = False   # Set the maximum difficulty to the litecoin difficulty.
-DIFF_UPDATE_FREQUENCY = 86400 # Update the litecoin difficulty once a day for the VARDIFF maximum
+USE_DASHCOIN_DIFF = False   # Set the maximum difficulty to the dashcoin difficulty.
+DIFF_UPDATE_FREQUENCY = 86400 # Update the dashcoin difficulty once a day for the VARDIFF maximum
 VDIFF_MIN_TARGET = 15       #  Minimum Target difficulty
 VDIFF_MAX_TARGET = 1000     # Maximum Target difficulty
 VDIFF_TARGET_TIME = 30      # Target time per share (i.e. try to get 1 share per this many seconds)

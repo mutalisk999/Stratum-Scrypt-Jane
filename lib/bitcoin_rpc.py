@@ -1,5 +1,5 @@
 """
-    Implements simple interface to litecoind's RPC.
+    Implements simple interface to Dashcoind's RPC.
 """
 
 import simplejson as json

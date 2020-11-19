@@ -75,26 +75,26 @@ class BasicShareLimiter(object):
         self.tmin = self.target - self.variance
         self.tmax = self.target + self.variance
         self.buffersize = self.retarget / self.target * 4
-        self.litecoin = {}
-        self.litecoin_diff = 100000000  # TODO: Set this to VARDIFF_MAX
+        self.dashcoin = {}
+        self.dashcoin_diff = 100000000  # TODO: Set this to VARDIFF_MAX
         # TODO: trim the hash of inactive workers
 
     @defer.inlineCallbacks
-    def update_litecoin_difficulty(self):
-        # Cache the litecoin difficulty so we do not have to query it on every submit
+    def update_dashcoin_difficulty(self):
+        # Cache the dashcoin difficulty so we do not have to query it on every submit
         # Update the difficulty  if it is out of date or not set
-        if 'timestamp' not in self.litecoin or self.litecoin['timestamp'] < int(
+        if 'timestamp' not in self.dashcoin or self.dashcoin['timestamp'] < int(
                 time.time()) - settings.DIFF_UPDATE_FREQUENCY:
-            self.litecoin['timestamp'] = time.time()
+            self.dashcoin['timestamp'] = time.time()
             ldiff = (yield Interfaces.template_registry.bitcoin_rpc.getdifficulty())
             # if 'proof-of-work' in ldiff:
-            #    self.litecoin['difficulty'] = ldiff['proof-of-work']
+            #    self.dashcoin['difficulty'] = ldiff['proof-of-work']
             # else:
-            #    self.litecoin['difficulty'] = ldiff
-            self.litecoin['difficulty'] = ldiff
+            #    self.dashcoin['difficulty'] = ldiff
+            self.dashcoin['difficulty'] = ldiff
 
-            log.debug("Updated litecoin difficulty to %s" % (self.litecoin['difficulty']))
-        self.litecoin_diff = self.litecoin['difficulty']
+            log.debug("Updated dashcoin difficulty to %s" % (self.dashcoin['difficulty']))
+        self.dashcoin_diff = self.dashcoin['difficulty']
 
     def submit(self, connection_ref, job_id, current_difficulty, timestamp, worker_name):
         ts = int(timestamp)
@@ -139,10 +139,10 @@ class BasicShareLimiter(object):
             # For fractional 0.1 ddiff's just up by 1
             if ddiff < 1:
                 ddiff = 1
-            # Don't go above LITECOIN or VDIFF_MAX_TARGET
-            self.update_litecoin_difficulty()
-            if settings.USE_LITECOIN_DIFF:
-                diff_max = min([settings.VDIFF_MAX_TARGET, self.litecoin_diff])
+            # Don't go above DASHCOIN or VDIFF_MAX_TARGET
+            self.update_dashcoin_difficulty()
+            if settings.USE_DASHCOIN_DIFF:
+                diff_max = min([settings.VDIFF_MAX_TARGET, self.dashcoin_diff])
             else:
                 diff_max = settings.VDIFF_MAX_TARGET
             if (ddiff + current_difficulty) > diff_max:

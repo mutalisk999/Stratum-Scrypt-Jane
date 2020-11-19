@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Send notification to Stratum mining instance add a new litecoind instance to the pool
+# Send notification to Stratum mining instance add a new Dashcoind instance to the pool
 
 import socket
 import json
@@ -9,14 +9,14 @@ import time
 
 start = time.time()
 
-parser = argparse.ArgumentParser(description='Add a litecoind server to the Stratum instance.')
+parser = argparse.ArgumentParser(description='Add a Dashcoind server to the Stratum instance.')
 parser.add_argument('--password', dest='password', type=str, help='use admin password from Stratum server config')
 parser.add_argument('--host', dest='host', type=str, default='localhost', help='hostname of Stratum mining instance')
 parser.add_argument('--port', dest='port', type=int, default=3333, help='port of Stratum mining instance')
-parser.add_argument('--lport', dest='lport', type=int, default=8332, help='port of litecoin instance')
-parser.add_argument('--lhost', dest='lhost', type=str, default='localhost', help='hostname of litecoin instance')
-parser.add_argument('--luser', dest='luser', type=str, default='user', help='user for the litecoin instance')
-parser.add_argument('--lpassword', dest='lpassword', type=str, default='somelargepassword', help='password for the user on the litecoin instance')
+parser.add_argument('--lport', dest='lport', type=int, default=8332, help='port of dashcoin instance')
+parser.add_argument('--lhost', dest='lhost', type=str, default='localhost', help='hostname of dashcoin instance')
+parser.add_argument('--luser', dest='luser', type=str, default='user', help='user for the dashcoin instance')
+parser.add_argument('--lpassword', dest='lpassword', type=str, default='somelargepassword', help='password for the user on the dashcoin instance')
 
 args = parser.parse_args()
 
@@ -24,7 +24,7 @@ if args.password == None:
 	parser.print_help()
 	sys.exit()
 	
-message = {'id': 1, 'method': 'mining.add_litecoind', 'params': [args.password, args.lhost, args.lport, args.luser, args.lpassword]}
+message = {'id': 1, 'method': 'mining.add_dashcoind', 'params': [args.password, args.lhost, args.lport, args.luser, args.lpassword]}
 
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,7 +33,7 @@ try:
     data = s.recv(16000)
     s.close()
 except IOError:
-    print "addlitecoind: Cannot connect to the pool"
+    print "addDashcoind: Cannot connect to the pool"
     sys.exit()
 
 for line in data.split("\n"):
@@ -44,8 +44,8 @@ for line in data.split("\n"):
     message = json.loads(line)
     if message['id'] == 1:
         if message['result'] == True:
-	        print "addlitecoind: done in %.03f sec" % (time.time() - start)
+	        print "addDashcoind: done in %.03f sec" % (time.time() - start)
         else:
-            print "addlitecoind: Error during request:", message['error'][1]
+            print "addDashcoind: Error during request:", message['error'][1]
     else:
-        print "addlitecoind: Unexpected message from the server:", message
+        print "addDashcoind: Unexpected message from the server:", message

@@ -9,26 +9,26 @@ You NEED to set the parameters in BASIC SETTINGS
 # ******************** BASIC SETTINGS ***************
 # These are the MUST BE SET parameters!
 
-CENTRAL_WALLET = 'set_valid_addresss_in_config!'	# local litecoin address where money goes
+CENTRAL_WALLET = 'set_valid_addresss_in_config!'	# local dashcoin address where money goes
 
-LITECOIN_TRUSTED_HOST = 'localhost'
-LITECOIN_TRUSTED_PORT = 8332
-LITECOIN_TRUSTED_USER = 'user'
-LITECOIN_TRUSTED_PASSWORD = 'somepassword'
+DASHCOIN_TRUSTED_HOST = 'localhost'
+DASHCOIN_TRUSTED_PORT = 8332
+DASHCOIN_TRUSTED_USER = 'user'
+DASHCOIN_TRUSTED_PASSWORD = 'somepassword'
 
 # ******************** BASIC SETTINGS ***************
-# Backup Litecoind connections (consider having at least 1 backup)
+# Backup Dashcoind connections (consider having at least 1 backup)
 # You can have up to 99
 
-#LITECOIN_TRUSTED_HOST_1 = 'localhost'
-#LITECOIN_TRUSTED_PORT_1 = 8332
-#LITECOIN_TRUSTED_USER_1 = 'user'
-#LITECOIN_TRUSTED_PASSWORD_1 = 'somepassword'
+#DASHCOIN_TRUSTED_HOST_1 = 'localhost'
+#DASHCOIN_TRUSTED_PORT_1 = 8332
+#DASHCOIN_TRUSTED_USER_1 = 'user'
+#DASHCOIN_TRUSTED_PASSWORD_1 = 'somepassword'
 
-#LITECOIN_TRUSTED_HOST_2 = 'localhost'
-#LITECOIN_TRUSTED_PORT_2 = 8332
-#LITECOIN_TRUSTED_USER_2 = 'user'
-#LITECOIN_TRUSTED_PASSWORD_2 = 'somepassword'
+#DASHCOIN_TRUSTED_HOST_2 = 'localhost'
+#DASHCOIN_TRUSTED_PORT_2 = 8332
+#DASHCOIN_TRUSTED_USER_2 = 'user'
+#DASHCOIN_TRUSTED_PASSWORD_2 = 'somepassword'
 
 # ******************** GENERAL SETTINGS ***************
 
@@ -110,7 +110,7 @@ USERS_CHECK_PASSWORD = False	# Check the workers password? (Many pools don't)
 COINBASE_EXTRAS = '/stratumPool/'			# Extra Descriptive String to incorporate in solved blocks
 ALLOW_NONLOCAL_WALLET = False				# Allow valid, but NON-Local wallet's
 
-# Litecoind communication polling settings (In Seconds)
+# Dashcoind communication polling settings (In Seconds)
 PREVHASH_REFRESH_INTERVAL = 5 	# How often to check for new Blocks
 				#	If using the blocknotify script (recommended) set = to MERKLE_REFRESH_INTERVAL
 				#	(No reason to poll if we're getting pushed notifications)
@@ -131,8 +131,8 @@ VARIABLE_DIFF = True		# Master variable difficulty enable
 
 # Variable diff tuning variables
 #VARDIFF will start at the POOL_TARGET. It can go as low as the VDIFF_MIN and as high as min(VDIFF_MAX or Liteconin's difficulty)
-USE_LITECOIN_DIFF = False   # Set the maximum difficulty to the litecoin difficulty.
-DIFF_UPDATE_FREQUENCY = 86400 # Update the litecoin difficulty once a day for the VARDIFF maximum
+USE_DASHCOIN_DIFF = False   # Set the maximum difficulty to the dashcoin difficulty.
+DIFF_UPDATE_FREQUENCY = 86400 # Update the dashcoin difficulty once a day for the VARDIFF maximum
 VDIFF_MIN_TARGET = 15		#  Minimum Target difficulty 
 VDIFF_MAX_TARGET = 1000		# Maximum Target difficulty 
 VDIFF_TARGET_TIME = 30		# Target time per share (i.e. try to get 1 share per this many seconds)

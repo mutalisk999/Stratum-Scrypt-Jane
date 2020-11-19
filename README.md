@@ -15,21 +15,21 @@ The goal is to make a reliable stratum mining server for scrypt based coins. Ove
 * Vardiff support
 * Log Rotation
 * Initial low difficulty share confirmation
-* Multiple *litecoind* wallets
-* On the fly addition of new *litecoind* wallets
+* Multiple *Dashcoind* wallets
+* On the fly addition of new *Dashcoind* wallets
 * MySQL database support
 * Adjustable database commit parameters
 * Bypass password check for workers
 
 
 #Requirements
-*stratum-mining-litecoin* is built in python. I have been testing it with 2.7.3, but it should work with other versions. The requirements for running the software are below.
+*stratum-mining-dashcoin* is built in python. I have been testing it with 2.7.3, but it should work with other versions. The requirements for running the software are below.
 
 * Python 2.7+
 * python-twisted
 * stratum
 * MySQL Server 
-* Litecoind
+* Dashcoind
 
 Other coins have been known to work with this implementation. I have tested with the following coins, but there may be many others that work. 
 
@@ -40,10 +40,10 @@ Other coins have been known to work with this implementation. I have tested with
 
 #Installation
 
-The installation of this *stratum-mining-litecoin* can be found in the INSTALL.md file. 
+The installation of this *stratum-mining-dashcoin* can be found in the INSTALL.md file.
 
 #Contact
-I try to stay in #stratum-mining-litecoin on freenode. I am more responsive to requests made through github. 
+I try to stay in #stratum-mining-dashcoin on freenode. I am more responsive to requests made through github.
 
 #Credits
 

@@ -1,5 +1,5 @@
 """
-    Implements simple interface to litecoind's RPC.
+    Implements simple interface to Dashcoind's RPC.
 """
 
 
@@ -20,17 +20,17 @@ class BitcoinRPCManager(object):
     
     def __init__(self):
         self.conns = {}
-        self.conns[0] = BitcoinRPC(settings.LITECOIN_TRUSTED_HOST,
-                             settings.LITECOIN_TRUSTED_PORT,
-                             settings.LITECOIN_TRUSTED_USER,
-                             settings.LITECOIN_TRUSTED_PASSWORD)
+        self.conns[0] = BitcoinRPC(settings.DASHCOIN_TRUSTED_HOST,
+                             settings.DASHCOIN_TRUSTED_PORT,
+                             settings.DASHCOIN_TRUSTED_USER,
+                             settings.DASHCOIN_TRUSTED_PASSWORD)
         self.curr_conn = 0
         for x in range (1, 99):
-            if hasattr(settings, 'LITECOIN_TRUSTED_HOST_' + str(x)) and hasattr(settings, 'LITECOIN_TRUSTED_PORT_' + str(x)) and hasattr(settings, 'LITECOIN_TRUSTED_USER_' + str(x)) and hasattr(settings, 'LITECOIN_TRUSTED_PASSWORD_' + str(x)):
-                self.conns[len(self.conns)] = BitcoinRPC(settings.__dict__['LITECOIN_TRUSTED_HOST_' + str(x)],
-                                                        settings.__dict__['LITECOIN_TRUSTED_PORT_' + str(x)],
-                                                        settings.__dict__['LITECOIN_TRUSTED_USER_' + str(x)],
-                                                        settings.__dict__['LITECOIN_TRUSTED_PASSWORD_' + str(x)])
+            if hasattr(settings, 'DASHCOIN_TRUSTED_HOST_' + str(x)) and hasattr(settings, 'DASHCOIN_TRUSTED_PORT_' + str(x)) and hasattr(settings, 'DASHCOIN_TRUSTED_USER_' + str(x)) and hasattr(settings, 'DASHCOIN_TRUSTED_PASSWORD_' + str(x)):
+                self.conns[len(self.conns)] = BitcoinRPC(settings.__dict__['DASHCOIN_TRUSTED_HOST_' + str(x)],
+                                                        settings.__dict__['DASHCOIN_TRUSTED_PORT_' + str(x)],
+                                                        settings.__dict__['DASHCOIN_TRUSTED_USER_' + str(x)],
+                                                        settings.__dict__['DASHCOIN_TRUSTED_PASSWORD_' + str(x)])
 
     def add_connection(self, host, port, user, password):
         # TODO: Some string sanity checks
