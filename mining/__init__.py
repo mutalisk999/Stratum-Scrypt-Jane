@@ -68,7 +68,7 @@ def setup(on_startup):
 
     # Start the coinbaser
     coinbaser = SimpleCoinbaser(bitcoin_rpc, getattr(settings, 'CENTRAL_WALLET'))
-    (yield coinbaser.on_load)
+    yield coinbaser.on_load
 
     registry = TemplateRegistry(BlockTemplate,
                                 coinbaser,

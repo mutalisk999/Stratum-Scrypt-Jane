@@ -234,9 +234,18 @@ def ser_number(n):
     return bytes(s)
 
 
-def script_to_pubkey(key):
-    if len(key) == 66:
-        key = binascii.unhexlify(key)
+def get_p2pk_script(hexstr):
+    key = b''
+    if len(hexstr) == 66:
+        key = binascii.unhexlify(hexstr)
     if len(key) != 33:
         raise Exception('Invalid Public Key: Check CENTRAL_WALLET')
     return b'\x21' + key + b'\xac'
+
+
+def get_p2pkh_script(base58Str):
+    key = address_to_pubkeyhash(base58Str)
+    if key is None:
+        raise Exception('Invalid Address: Check CENTRAL_WALLET')
+    return b'\x76' + b'\xa9' + b'\x14' + key[1] + b'\x88' + b'\xac'
+

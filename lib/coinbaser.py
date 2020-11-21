@@ -14,8 +14,8 @@ class SimpleCoinbaser(object):
     """This very simple coinbaser uses constant bitcoin address
     for all generated blocks."""
 
-    def __init__(self, bitcoin_rpc, pubkey):
-        self.pubkey = pubkey
+    def __init__(self, bitcoin_rpc, wallet):
+        self.wallet = wallet
         # Fire callback when coinbaser is ready
         self.on_load = defer.Deferred()
         self.on_load.callback(True)
@@ -27,7 +27,12 @@ class SimpleCoinbaser(object):
     #    pass
 
     def get_script_pubkey(self):
-        return util.script_to_pubkey(self.pubkey)
+        # pubkey
+        if len(self.wallet) == 66:
+            return util.get_p2pk_script(self.wallet)
+        # address
+        else:
+            return util.get_p2pkh_script(self.wallet)
 
     def get_coinbase_data(self):
         return ''
