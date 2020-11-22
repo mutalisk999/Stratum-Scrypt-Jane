@@ -42,8 +42,7 @@ class TemplateRegistry(object):
         # set extranonce size 4
         # set extranonce2 size 4
         self.extranonce_counter = ExtranonceCounter(instance_id)
-        self.extranonce2_size = block_template_class.coinbase_transaction_class.extranonce_size \
-                                - self.extranonce_counter.get_size()
+        self.extranonce2_size = block_template_class.coinbase_transaction_class.extranonce_size - self.extranonce_counter.get_size()
 
         self.coinbaser = coinbaser
         self.block_template_class = block_template_class
