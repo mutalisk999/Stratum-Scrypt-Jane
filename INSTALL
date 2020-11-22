@@ -12,7 +12,7 @@ Step 1. Install the stratum core
 	  (or if using alternate python: sudo /usr/local/bin/easy_install stratum)
 
 Step 2. Pull a copy of the miner
-	git pull https://github.com/moopless/stratum-mining-dashcoin.git
+	git pull https://github.com/moopless/stratum-mining-litecoin.git
 
 Step 3. Configure the Miner
 	cp conf/config_sample.py conf/config.py
