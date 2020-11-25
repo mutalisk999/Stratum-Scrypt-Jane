@@ -212,6 +212,7 @@ class CBlock(object):
         self.vtx = []
         self.sha256 = None
         self.scrypt = None
+        self.x11hash = None
         self.signature = b""
 
     def deserialize(self, f):
@@ -248,8 +249,20 @@ class CBlock(object):
             self.sha256 = uint256_from_str(SHA256.new(SHA256.new(''.join(r)).digest()).digest())
         return self.sha256
 
-    def calc_scrypt(self):
-        if self.scrypt is None:
+    # def calc_scrypt(self):
+    #     if self.sha256 is None:
+    #         r = []
+    #         r.append(struct.pack("<i", self.nVersion))
+    #         r.append(ser_uint256(self.hashPrevBlock))
+    #         r.append(ser_uint256(self.hashMerkleRoot))
+    #         r.append(struct.pack("<I", self.nTime))
+    #         r.append(struct.pack("<I", self.nBits))
+    #         r.append(struct.pack("<I", self.nNonce))
+    #         self.scrypt = uint256_from_str(ltc_scrypt.getPoWHash(''.join(r)))
+    #     return self.scrypt
+
+    def calc_x11(self):
+        if self.x11hash is None:
             r = []
             r.append(struct.pack("<i", self.nVersion))
             r.append(ser_uint256(self.hashPrevBlock))
@@ -257,15 +270,15 @@ class CBlock(object):
             r.append(struct.pack("<I", self.nTime))
             r.append(struct.pack("<I", self.nBits))
             r.append(struct.pack("<I", self.nNonce))
-            self.scrypt = uint256_from_str(pyX11.x11_hash(''.join(r)))
-        return self.scrypt
+            self.x11hash = uint256_from_str(pyX11.x11_hash(''.join(r)))
+        return self.x11hash
 
     def is_valid(self):
         # self.calc_sha256()
-        self.calc_scrypt()
+        self.calc_x11()
         target = uint256_from_compact(self.nBits)
         # if self.sha256 > target:
-        if self.scrypt > target:
+        if self.x11hash > target:
             return False
         hashes = []
         for tx in self.vtx:
