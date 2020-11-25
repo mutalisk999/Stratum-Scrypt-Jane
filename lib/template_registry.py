@@ -2,8 +2,7 @@ import weakref
 import binascii
 import util
 import StringIO
-import ltc_scrypt
-import yac_scrypt
+import pyX11
 from twisted.internet import defer
 from lib.exceptions import SubmitException
 
@@ -235,7 +234,7 @@ class TemplateRegistry(object):
 
         # 4. Reverse header and compare it with target of the user hash_bin = yac_scrypt.getPoWHash (''. join ([
         # header_bin [i * 4: i * 4 +4] [:: -1] for i in range (0, 20)]), int (ntime, 16))
-        hash_bin = ltc_scrypt.getPoWHash(''.join([header_bin[i * 4: i * 4 + 4][:: -1] for i in range(0, 20)]))
+        hash_bin = pyX11.x11_hash(''.join([header_bin[i * 4: i * 4 + 4][:: -1] for i in range(0, 20)]))
         hash_int = util.uint256_from_str(hash_bin)
         scrypt_hash_hex = "%064x" % hash_int
         header_hex = binascii.hexlify(header_bin)

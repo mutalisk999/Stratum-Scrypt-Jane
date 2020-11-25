@@ -15,7 +15,7 @@ from Crypto.Hash import SHA256
 from twisted.internet.protocol import Protocol
 from util import *
 
-import ltc_scrypt
+import pyX11
 import lib.logger
 
 log = lib.logger.get_logger('halfnode')
@@ -257,7 +257,7 @@ class CBlock(object):
             r.append(struct.pack("<I", self.nTime))
             r.append(struct.pack("<I", self.nBits))
             r.append(struct.pack("<I", self.nNonce))
-            self.scrypt = uint256_from_str(ltc_scrypt.getPoWHash(''.join(r)))
+            self.scrypt = uint256_from_str(pyX11.x11_hash(''.join(r)))
         return self.scrypt
 
     def is_valid(self):
