@@ -33,7 +33,6 @@ class CAddress(object):
         self.port = 0
 
     def deserialize(self, f):
-        # self.nTime = struct.unpack("<I", f.read(4))[0]
         self.nServices = struct.unpack("<Q", f.read(8))[0]
         self.pchReserved = f.read(12)
         self.ip = socket.inet_ntoa(f.read(4))
@@ -41,7 +40,6 @@ class CAddress(object):
 
     def serialize(self):
         r = ""
-        # r += struct.pack("<I", self.nTime)
         r += struct.pack("<Q", self.nServices)
         r += self.pchReserved
         r += socket.inet_aton(self.ip)
