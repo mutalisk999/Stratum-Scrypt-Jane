@@ -1,0 +1,3 @@
+[submodule "pyX11"]
+	path = pyX11
+	url = https://github.com/mutalisk999/pyX11
