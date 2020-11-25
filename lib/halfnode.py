@@ -161,7 +161,6 @@ class CTxOut(object):
 class CTransaction(object):
     def __init__(self):
         self.nVersion = 1
-        self.nTime = 0
         self.vin = []
         self.vout = []
         self.nLockTime = 0
@@ -169,7 +168,6 @@ class CTransaction(object):
 
     def deserialize(self, f):
         self.nVersion = struct.unpack("<i", f.read(4))[0]
-        self.nTime = struct.unpack("<i", f.read(4))[0]
         self.vin = deser_vector(f, CTxIn)
         self.vout = deser_vector(f, CTxOut)
         self.nLockTime = struct.unpack("<I", f.read(4))[0]
@@ -178,7 +176,6 @@ class CTransaction(object):
     def serialize(self):
         r = ""
         r += struct.pack("<i", self.nVersion)
-        r += struct.pack("<i", self.nTime)
         r += ser_vector(self.vin)
         r += ser_vector(self.vout)
         r += struct.pack("<I", self.nLockTime)
@@ -213,7 +210,6 @@ class CBlock(object):
         self.sha256 = None
         self.scrypt = None
         self.x11hash = None
-        self.signature = b""
 
     def deserialize(self, f):
         self.nVersion = struct.unpack("<i", f.read(4))[0]
@@ -223,7 +219,6 @@ class CBlock(object):
         self.nBits = struct.unpack("<I", f.read(4))[0]
         self.nNonce = struct.unpack("<I", f.read(4))[0]
         self.vtx = deser_vector(f, CTransaction)
-        self.signature = deser_string(f)
 
     def serialize(self):
         r = []
@@ -234,7 +229,6 @@ class CBlock(object):
         r.append(struct.pack("<I", self.nBits))
         r.append(struct.pack("<I", self.nNonce))
         r.append(ser_vector(self.vtx))
-        r.append(ser_string(self.signature))
         return ''.join(r)
 
     def calc_sha256(self):
