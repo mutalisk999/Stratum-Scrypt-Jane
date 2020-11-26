@@ -48,6 +48,7 @@ class BlockTemplate(halfnode.CBlock):
 
         # txhashes = [None] + [ binascii.unhexlify(t['hash']) for t in data['transactions'] ]
         txhashes = [None] + [util.ser_uint256(int(t['hash'], 16)) for t in data['transactions']]
+        log.debug("txhashes: %s", "|".join([t['hash'] for t in data['transactions']]))
         mt = merkletree.MerkleTree(txhashes)
 
         coinbase = self.coinbase_transaction_class(self.timestamper, self.coinbaser, data['coinbasevalue'],

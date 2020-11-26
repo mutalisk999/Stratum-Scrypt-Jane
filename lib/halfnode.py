@@ -158,25 +158,35 @@ class CTxOut(object):
 
 class CTransaction(object):
     def __init__(self):
+        self.nVersion32 = 1
         self.nVersion = 1
+        self.nType = 0
         self.vin = []
         self.vout = []
         self.nLockTime = 0
+        self.vExtraPayload = ""
         self.sha256 = None
 
     def deserialize(self, f):
-        self.nVersion = struct.unpack("<i", f.read(4))[0]
+        self.nVersion32 = struct.unpack("<i", f.read(4))[0]
+        self.nVersion = self.nVersion32 & 0xffff
+        self.nType = (self.nVersion32 & 0xffff0000) >> 16
         self.vin = deser_vector(f, CTxIn)
         self.vout = deser_vector(f, CTxOut)
         self.nLockTime = struct.unpack("<I", f.read(4))[0]
+        if self.nVersion == 3 and self.nType != 0:
+            self.vExtraPayload = deser_string(f)
         self.sha256 = None
 
     def serialize(self):
         r = ""
-        r += struct.pack("<i", self.nVersion)
+        self.nVersion32 = (self.nType << 16) | self.nVersion
+        r += struct.pack("<i", self.nVersion32)
         r += ser_vector(self.vin)
         r += ser_vector(self.vout)
         r += struct.pack("<I", self.nLockTime)
+        if self.nVersion == 3 and self.nType != 0:
+            r += ser_string(self.vExtraPayload)
         return r
 
     def calc_sha256(self):
@@ -192,8 +202,8 @@ class CTransaction(object):
         return True
 
     def __repr__(self):
-        return "CTransaction(nVersion=%i vin=%s vout=%s nLockTime=%i)" % (
-        self.nVersion, repr(self.vin), repr(self.vout), self.nLockTime)
+        return "CTransaction(nVersion32=%i vin=%s vout=%s nLockTime=%i)" % (
+        self.nVersion32, repr(self.vin), repr(self.vout), self.nLockTime)
 
 
 class CBlock(object):

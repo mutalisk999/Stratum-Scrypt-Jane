@@ -139,6 +139,7 @@ class TemplateRegistry(object):
 
         log.debug("Update finished, %.03f sec, %d txes" % \
                   (Interfaces.timestamper.time() - start, len(template.vtx)))
+        log.debug("block template: %s", data)
 
         self.update_in_progress = False
         return data
@@ -228,9 +229,14 @@ class TemplateRegistry(object):
         # 2. Calculate merkle root
         merkle_root_bin = job.merkletree.withFirst(coinbase_hash)
         merkle_root_int = util.uint256_from_str(merkle_root_bin)
+        
+        log.debug("coinbase_hash: %s", coinbase_hash[::-1].encode("hex"))
 
         # 3. Serialize header with given merkle, ntime and nonce
         header_bin = job.serialize_header(merkle_root_int, ntime_bin, nonce_bin)
+        
+        header_hex = header_bin.encode("hex")
+        log.debug("header_hex: %s", header_hex)
 
         # 4. Reverse header and compare it with target of the user hash_bin = yac_scrypt.getPoWHash (''. join ([
         # header_bin [i * 4: i * 4 +4] [:: -1] for i in range (0, 20)]), int (ntime, 16))
@@ -269,6 +275,8 @@ class TemplateRegistry(object):
 
             # 7. Submit block to the network
             serialized = binascii.hexlify(job.serialize())
+            log.debug("block_hex: %s", serialized)
+            
             on_submit = self.bitcoin_rpc.submitblock(serialized, x11_hash_hex)
 
             return header_hex, x11_hash_hex, share_diff, on_submit

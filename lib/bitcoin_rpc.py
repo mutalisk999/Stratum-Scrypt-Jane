@@ -47,6 +47,7 @@ class BitcoinRPC(object):
         log.debug("submitblock %s" % block_hash_hex)
         try:
             resp = (yield self._call('submitblock', [block_hex, ]))
+            log.debug("submit return: %s", resp)
         except Exception as e:
             print >> sys.stderr, "Problem Submitting submitblock", str(e)
             log.exception("Problem Submitting block %s" % str(e))
