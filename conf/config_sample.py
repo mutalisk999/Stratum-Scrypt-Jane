@@ -9,12 +9,12 @@ You NEED to set the parameters in BASIC SETTINGS
 # ******************** BASIC SETTINGS ***************
 # These are the MUST BE SET parameters!
 
-CENTRAL_WALLET = 'set_valid_addresss_in_config!'  # local dashcoin pubkey or address where money goes
+CENTRAL_WALLET = 'XiB2rj7PdESyaxJVsnmjhXf9D9bYJjX7ob'  # local dashcoin pubkey or address where money goes
 
-DASHCOIN_TRUSTED_HOST = 'localhost'
-DASHCOIN_TRUSTED_PORT = 8332
-DASHCOIN_TRUSTED_USER = 'user'
-DASHCOIN_TRUSTED_PASSWORD = 'somepassword'
+DASHCOIN_TRUSTED_HOST = '192.168.1.124'
+DASHCOIN_TRUSTED_PORT = 38990
+DASHCOIN_TRUSTED_USER = 'a'
+DASHCOIN_TRUSTED_PASSWORD = 'b'
 
 # ******************** BASIC SETTINGS ***************
 # Backup Dashcoind connections (consider having at least 1 backup)
@@ -39,13 +39,13 @@ DEBUG = False
 LOGDIR = 'log/'
 
 # Main application log file.
-LOGFILE = None  # eg. 'stratum.log'
+LOGFILE = 'stratum.log'  # eg. 'stratum.log'
 
 # Possible values: DEBUG, INFO, WARNING, ERROR, CRITICAL
-LOGLEVEL = 'INFO'
+LOGLEVEL = 'DEBUG'
 
 # Logging Rotation can be enabled with the following settings
-# It if not enabled here, you can set up logrotate to rotate the files. 
+# It if not enabled here, you can set up logrotate to rotate the files.
 # For built in log rotation set LOG_ROTATION = True and configrue the variables
 LOG_ROTATION = True
 LOG_SIZE = 10485760  # Rotate every 10M
@@ -82,9 +82,9 @@ PASSWORD_SALT = 'some_crazy_string'
 # MySQL
 DB_MYSQL_HOST = 'localhost'
 DB_MYSQL_PORT = 3306
-DB_MYSQL_DBNAME = 'pooldb'
-DB_MYSQL_USER = 'pooldb'
-DB_MYSQL_PASS = '**empty**'
+DB_MYSQL_DBNAME = 'dashpool'
+DB_MYSQL_USER = 'root'
+DB_MYSQL_PASS = '123456'
 
 # ******************** Adv. DB Settings *********************
 #  Don't change these unless you know what you are doing
@@ -102,7 +102,7 @@ DB_USERCACHE_TIME = 600  # How long the usercache is good for before we refresh
 # ******************** Pool Settings *********************
 
 # User Auth Options
-USERS_AUTOADD = False  # Automatically add users to db when they connect.
+USERS_AUTOADD = True  # Automatically add users to db when they connect.
 # This basically disables User Auth for the pool.
 USERS_CHECK_PASSWORD = False  # Check the workers password? (Many pools don't)
 
@@ -124,7 +124,7 @@ INSTANCE_ID = 31  # Used for extranonce and needs to be 0-31
 #  Again, Don't change unless you know what this is for.
 
 # Pool Target (Base Difficulty)
-POOL_TARGET = 16  # Pool-wide difficulty target int >= 1
+POOL_TARGET = 0.1  # Pool-wide difficulty target int >= 1
 
 # Variable Difficulty Enable
 VARIABLE_DIFF = True  # Master variable difficulty enable
@@ -133,8 +133,8 @@ VARIABLE_DIFF = True  # Master variable difficulty enable
 # VARDIFF will start at the POOL_TARGET. It can go as low as the VDIFF_MIN and as high as min(VDIFF_MAX or Liteconin's difficulty)
 USE_DASHCOIN_DIFF = False  # Set the maximum difficulty to the dashcoin difficulty.
 DIFF_UPDATE_FREQUENCY = 86400  # Update the dashcoin difficulty once a day for the VARDIFF maximum
-VDIFF_MIN_TARGET = 15  # Minimum Target difficulty
-VDIFF_MAX_TARGET = 1000  # Maximum Target difficulty
+VDIFF_MIN_TARGET = 0.1  # Minimum Target difficulty
+VDIFF_MAX_TARGET = 5  # Maximum Target difficulty
 VDIFF_TARGET_TIME = 30  # Target time per share (i.e. try to get 1 share per this many seconds)
 VDIFF_RETARGET_TIME = 120  # Check to see if we should retarget this often
 VDIFF_VARIANCE_PERCENT = 20  # Allow average time to very this % from target without retarget
