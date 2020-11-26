@@ -44,7 +44,7 @@ EXECUTE stmt;
 
 CREATE TABLE IF NOT EXISTS `pool_worker` (
   `id` int(255) NOT NULL AUTO_INCREMENT,
-  `account_id` int(255) NOT NULL,
+  `account_id` int(255) NULL,
   `username` char(50) DEFAULT NULL,
   `password` char(255) DEFAULT NULL,
   `hashrate` int(11) DEFAULT NULL,
