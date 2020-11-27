@@ -33,6 +33,9 @@ class BlockTemplate(halfnode.CBlock):
         self.timedelta = 0
         self.curtime = 0
         self.target = 0
+        
+        self.coinbase_payload = ''  # for dashcoin
+        
         # self.coinbase_hex = None
         self.merkletree = None
 
@@ -53,12 +56,16 @@ class BlockTemplate(halfnode.CBlock):
 
         coinbase = self.coinbase_transaction_class(self.timestamper, self.coinbaser, data['coinbasevalue'],
                                                    data['coinbaseaux']['flags'], data['height'],
-                                                   settings.COINBASE_EXTRAS, data['curtime'])
+                                                   settings.COINBASE_EXTRAS, data['curtime'], data['coinbase_payload'])
 
         self.height = data['height']
         self.nVersion = data['version']
         self.hashPrevBlock = int(data['previousblockhash'], 16)
         self.nBits = int(data['bits'], 16)
+        
+        # for dashcoin
+        self.coinbase_payload = binascii.unhexlify(data['coinbase_payload'])
+        
         self.hashMerkleRoot = 0
         self.nTime = 0
         self.nNonce = 0
