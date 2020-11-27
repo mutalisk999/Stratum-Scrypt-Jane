@@ -56,3 +56,7 @@ I try to stay in #stratum-mining-dashcoin on freenode. I am more responsive to r
 
 #License
 This software is provides AS-IS without any warranties of any kind. Please use at your own risk. 
+
+
+#GPU Mining Tools
+https://docs.dash.org/en/stable/mining/
