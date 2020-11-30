@@ -249,3 +249,10 @@ def get_p2pkh_script(base58Str):
         raise Exception('Invalid Address: Check CENTRAL_WALLET')
     return b'\x76' + b'\xa9' + b'\x14' + key[1] + b'\x88' + b'\xac'
 
+
+def _test():
+    print binascii.hexlify(ser_uint256(int("a9c02cb69f753ef724110f7a0b95724492ded6ac1333f22424de0b8eafdb35a2", 16)))
+
+
+if __name__ == '__main__':
+    _test()

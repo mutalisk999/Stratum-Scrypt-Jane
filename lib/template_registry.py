@@ -38,7 +38,8 @@ class TemplateRegistry(object):
         self.prevhashes = {}
         self.jobs = weakref.WeakValueDictionary()
 
-        # set extranonce size 4
+        # set extranonce size 8
+        # set extranonce_counter size 4
         # set extranonce2 size 4
         self.extranonce_counter = ExtranonceCounter(instance_id)
         self.extranonce2_size = block_template_class.coinbase_transaction_class.extranonce_size - self.extranonce_counter.get_size()
