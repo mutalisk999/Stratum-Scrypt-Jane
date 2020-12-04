@@ -254,5 +254,10 @@ def _test():
     print binascii.hexlify(ser_uint256(int("a9c02cb69f753ef724110f7a0b95724492ded6ac1333f22424de0b8eafdb35a2", 16)))
 
 
+def _test2():
+    print(ser_number(0x01020304).encode("hex"))
+    
+
 if __name__ == '__main__':
-    _test()
+    # _test()
+    _test2()

@@ -55,3 +55,8 @@ class CoinbaseTransaction(halfnode.CTransaction):
 
         (part1, part2) = self.vin[0]._scriptSig_template
         self.vin[0].scriptSig = part1 + extranonce + part2
+
+
+if __name__ == "__main__":
+    print(len(binascii.unhexlify("0000000000")))
+
