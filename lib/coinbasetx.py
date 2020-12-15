@@ -13,7 +13,7 @@ class CoinbaseTransaction(halfnode.CTransaction):
     extranonce_placeholder = struct.pack(extranonce_type, int('f000000ff111111f', 16))
     extranonce_size = struct.calcsize(extranonce_type)
 
-    def __init__(self, timestamper, coinbaser, value, flags, height, data, ntime, coinbase_payload):
+    def __init__(self, timestamper, coinbaser, value, flags, height, data, ntime, coinbase_payload, masternodes):
         super(CoinbaseTransaction, self).__init__()
 
         # self.extranonce = 0
@@ -32,15 +32,25 @@ class CoinbaseTransaction(halfnode.CTransaction):
 
         tx_in.scriptSig = tx_in._scriptSig_template[0] + self.extranonce_placeholder + tx_in._scriptSig_template[1]
 
-        tx_out = halfnode.CTxOut()
-        tx_out.nValue = value
-        tx_out.scriptPubKey = coinbaser.get_script_pubkey()
-
         # coinbase
         self.nVersion = 3
         self.nType = 5
         self.nTime = ntime
         self.vin.append(tx_in)
+
+        for masternode in masternodes:
+            master_coinbaser = coinbaser.SimpleCoinbaser(None, masternode['payee'])
+            tx_out = halfnode.CTxOut()
+            tx_out.nValue = masternode['amount']
+            tx_out.scriptPubKey = master_coinbaser.get_script_pubkey()
+            self.vout.append(tx_out)
+            value -= masternode['amount']
+
+        assert(value > 0, "coinbase reward <= 0")
+
+        tx_out = halfnode.CTxOut()
+        tx_out.nValue = value
+        tx_out.scriptPubKey = coinbaser.get_script_pubkey()
         self.vout.append(tx_out)
         
         # for dashcoin
