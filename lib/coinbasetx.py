@@ -2,6 +2,7 @@ import binascii
 import halfnode
 import struct
 import util
+import coinbaser
 
 
 class CoinbaseTransaction(halfnode.CTransaction):
@@ -13,7 +14,7 @@ class CoinbaseTransaction(halfnode.CTransaction):
     extranonce_placeholder = struct.pack(extranonce_type, int('f000000ff111111f', 16))
     extranonce_size = struct.calcsize(extranonce_type)
 
-    def __init__(self, timestamper, coinbaser, value, flags, height, data, ntime, coinbase_payload, masternodes):
+    def __init__(self, timestamper, reward_coinbaser, value, flags, height, data, ntime, coinbase_payload, masternodes):
         super(CoinbaseTransaction, self).__init__()
 
         # self.extranonce = 0
@@ -27,7 +28,7 @@ class CoinbaseTransaction(halfnode.CTransaction):
         tx_in._scriptSig_template = (
             util.ser_number(height) + binascii.unhexlify(flags) + util.ser_number(int(timestamper.time())) + \
             chr(self.extranonce_size),
-            util.ser_string(coinbaser.get_coinbase_data() + data)
+            util.ser_string(reward_coinbaser.get_coinbase_data() + data)
         )
 
         tx_in.scriptSig = tx_in._scriptSig_template[0] + self.extranonce_placeholder + tx_in._scriptSig_template[1]
@@ -50,7 +51,7 @@ class CoinbaseTransaction(halfnode.CTransaction):
 
         tx_out = halfnode.CTxOut()
         tx_out.nValue = value
-        tx_out.scriptPubKey = coinbaser.get_script_pubkey()
+        tx_out.scriptPubKey = reward_coinbaser.get_script_pubkey()
         self.vout.append(tx_out)
         
         # for dashcoin
